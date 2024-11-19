@@ -38,10 +38,11 @@ Route::get('add', function () {
 //    return view('client_list');
 //})->name('listClientPage');
 
+Route::get('add/client', [ClientController::class, 'addClientPage'])->name('addClientPage');
 
-Route::get('add/client', function () {
-    return view('Client.add');
-})->name('addClientPage');
+//Route::get('add/client', function () {
+//    return view('Client.add');
+//})->name('addClientPage');
 
 Route::get('add/branch', function () {
     return view('Branch.add');

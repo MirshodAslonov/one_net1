@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add New Client</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/css/bootstrap-select.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/js/bootstrap-select.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <style>
         /* Centering the content in the middle of the viewport */
@@ -129,53 +131,141 @@
 <div class="container-fluid mt-5">
     <div class="card shadow-lg border-0">
         <div class="card-header">
-            <h3 class="mb-0">Add New Client</h3>
-            <p class="text-light">Fill in the details below to add a new client.</p>
+            <h3 class="mb-0">Add  New  Hosts</h3>
+            <p class="text-light"></p>
         </div>
         <div class="card-body p-5">
-            <form action="{{ route('addClient') }}" method="POST" enctype="multipart/form-data" id="clientForm">
+            <form  action="{{ route('addClient') }}" method="POST" enctype="multipart/form-data" >
                 @csrf
-
                 <div class="row">
-                    <!-- Client Name -->
-                    <div class="col-md-6 mb-4">
-                        <label for="client_name" class="form-label">Client Name</label>
-                        <input type="text" id="client_name" name="client_name" class="form-control" placeholder="Enter client name" required>
-                    </div>
-
-                    <!-- Phone Number -->
-                    <div class="col-md-6 mb-4">
-                        <label for="number" class="form-label">Phone Number</label>
-                        <input type="text" id="number" name="number" class="form-control" placeholder="Enter phone number" required>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <!-- Comment -->
-                    <div class="col-md-6 mb-4">
-                        <label for="comment" class="form-label">Comment</label>
-                        <textarea id="comment" name="comment" rows="3" class="form-control" placeholder="Enter comment"></textarea>
-                    </div>
 
                     <!-- Branch -->
                     <div class="col-md-3 mb-4">
                         <label for="branch_id" class="form-label">Branch</label>
-                        <select id="branch_id" name="branch_id" class="form-select" required>
+                        <select id="branch_id" name="branch_id" class="form-select" data-live-search="true" required>
                             <option value="" selected disabled>Choose a branch</option>
-                            <option value="1">Toshkent</option>
-                            <option value="2">Buxoro</option>
+                            @foreach ($branches as $branch)
+                                <option value="{{ $branch->id }}">{{ $branch->name }}</option>
+                            @endforeach
                         </select>
                     </div>
+
 
                     <!-- Organization -->
                     <div class="col-md-3 mb-4">
                         <label for="organ_id" class="form-label">Organization</label>
                         <select id="organ_id" name="organ_id" class="form-select" required>
                             <option value="" selected disabled>Choose an organization</option>
-                            <option value="1">Org 1</option>
-                            <option value="2">Org 2</option>
+                            @foreach ($organs as $organ)
+                                <option value="{{ $organ->id }}">{{ $organ->name }}</option>
+                            @endforeach
                         </select>
                     </div>
+
+                    <!-- Host Name -->
+                    <div class="col-md-6 mb-4">
+                        <label for="host_name" class="form-label">Host Name</label>
+                        <input type="text" id="host_name" name="host_name" class="form-control" placeholder="Enter host name" required>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- Management IP -->
+                    <div class="col-md-2 mb-4">
+                        <label for="mgmt_ip" class="form-label">Management IP</label>
+                        <input type="text" id="mgmt_ip" name="mgmt_ip" class="form-control" placeholder="0.0.0.0" >
+                    </div>
+
+                    <!-- IP -->
+                    <div class="col-md-2 mb-4">
+                        <label for="ip" class="form-label">IP Address</label>
+                        <input type="text" id="ip" name="ip" class="form-control" placeholder="0.0.0.0/0" >
+                    </div>
+
+                    <!-- VLAN -->
+                    <div class="col-md-2 mb-4">
+                        <label for="vlan" class="form-label">VLAN</label>
+                        <input type="number" id="vlan" name="vlan" class="form-control" placeholder="Enter Vlan" >
+                    </div>
+
+                    <!-- VLAN 2 IP -->
+                    <div class="col-md-2 mb-4">
+                        <label for="vlan_ip" class="form-label">VLAN 2 IP</label>
+                        <input type="text" id="vlan_ip" name="vlan_ip" class="form-control" placeholder="Enter VLAN 2 IP" >
+                    </div>
+
+                    <!-- Request -->
+                    <div class="col-md-2 mb-4">
+                        <label for="zayafka" class="form-label">Zayafka</label>
+                        <input type="text" id="zayafka" name="zayafka" class="form-control" placeholder="Enter Zayafka" required>
+                    </div>
+
+                    <!-- STP Request -->
+                    <div class="col-md-2 mb-4">
+                        <label for="stp_zayafka" class="form-label">STP Zayafka</label>
+                        <input type="text" id="stp_zayafka" name="stp_zayafka" class="form-control" placeholder="Enter STP zayafka" >
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <!-- ATC -->
+                    <div class="col-md-2 mb-4">
+                        <label for="atc" class="form-label">ATC</label>
+                        <input type="text" id="atc" name="atc" class="form-control" placeholder="Enter ATC" required>
+                    </div>
+
+                    <!-- Port -->
+                    <div class="col-md-8 mb-4">
+                        <label for="port" class="form-label">Port</label>
+                        <input type="text" id="port" name="port" class="form-control" placeholder="Enter port" >
+                    </div>
+
+                    <!-- Speed -->
+                    <div class="col-md-2 mb-4">
+                        <label for="speed" class="form-label">Speed</label>
+                        <input type="text" id="speed" name="speed" class="form-control" placeholder="Enter speed" >
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <!-- Client Name -->
+                    <div class="col-md-4 mb-4">
+                        <label for="client_name" class="form-label">Client Name</label>
+                        <input type="text" id="client_name" name="client_name" class="form-control" placeholder="Enter client name" >
+                    </div>
+
+                    <!-- Client Number -->
+                    <div class="col-md-4 mb-4">
+                        <label for="client_number" class="form-label">Client Number</label>
+                        <input type="text" id="client_number" name="client_number" class="form-control" placeholder="+998 " >
+                    </div>
+                </div>
+
+                <div class="row">
+
+                    <!-- Date Connected -->
+                    <div class="col-md-4 mb-4">
+                        <label for="date_connect" class="form-label">Date Connected</label>
+                        <input type="date" id="date_connect" name="date_connect" class="form-control" >
+                    </div>
+
+                    <!-- Location -->
+                    <div class="col-md-4 mb-4">
+                        <label for="location" class="form-label">Location</label>
+                        <input type="text" id="location" name="location" class="form-control" placeholder="Enter location" >
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- Comment -->
+                    <div class="col-md-10 mb-4">
+                        <label for="comment" class="form-label">Comment</label>
+                        <textarea id="comment" name="comment" rows="3" class="form-control" placeholder="Enter comment"></textarea>
+                    </div>
+
                 </div>
 
                 <!-- File Upload Section -->
@@ -189,7 +279,7 @@
 
                 <!-- Submit Button -->
                 <div class="text-center mt-5">
-                    <button type="submit" class="btn btn-primary btn-lg rounded shadow">Save Client</button>
+                    <button type="submit" class="btn btn-primary btn-lg rounded shadow">Save Host</button>
                 </div>
             </form>
         </div>
@@ -212,8 +302,6 @@
         const fileInput = document.getElementById('file');
         const dropArea = document.getElementById('fileDropArea');
         const previewContainer = document.getElementById('image-preview');
-        const fullSizeImageModal = new bootstrap.Modal(document.getElementById('fullImageModal'));
-        const fullSizeImage = document.getElementById('full-size-image');
         const selectedFiles = []; // Array to hold selected files
 
         // Drag & Drop Handlers
@@ -235,7 +323,6 @@
 
         function handleFiles(files) {
             const fileArray = Array.from(files);
-
             fileArray.forEach(file => {
                 if (!selectedFiles.includes(file)) {
                     selectedFiles.push(file);
@@ -287,18 +374,18 @@
             fullSizeImageModal.show();
         }
 
-        // Form submission
+        // Correctly submit the form with files
         const form = document.getElementById('clientForm');
         form.addEventListener('submit', (e) => {
             e.preventDefault();
             const formData = new FormData(form);
 
-            // Append selected files to FormData
-            selectedFiles.forEach((file, index) => {
-                formData.append(`file[${index}]`, file);
+            // Append all selected files to FormData under 'file[]' key
+            selectedFiles.forEach((file) => {
+                formData.append('file[]', file);  // Ensure the key is 'file[]'
             });
 
-            // Submit the form using fetch or AJAX
+            // Submit the form using fetch
             fetch(form.action, {
                 method: 'POST',
                 body: formData,
@@ -312,8 +399,8 @@
                 });
         });
     });
-
 </script>
+
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>

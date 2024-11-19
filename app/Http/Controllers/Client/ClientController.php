@@ -3,19 +3,34 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
+use App\Models\Branch\Branch;
 use App\Models\Client\Client;
+use App\Models\Organ\Organ;
 use Illuminate\Http\Request;
 
 class ClientController extends Controller
 {
     public function list(Request $request)
     {
-        $list = Client::where('is_active','1')->get();
+        $list = Client::query()->where('is_active','1')->get();
         return view('Client.list', compact('list'));
+    }
+
+    public function addClientPage()
+    {
+        $branches = Branch::query()->where('is_active','1')->get();
+        $organs = Organ::query()->where('is_active','1')->get();
+
+//        session()->flash('success', 'Client add successfully!');
+        return view('Client.add',[
+            'branches' => $branches,
+            'organs' => $organs
+        ]);
     }
 
     public function add(Request $request)
     {
+        dd($request->all());
         $data = $request->all();
         Client::query()->create([
             'name' => $data['name']

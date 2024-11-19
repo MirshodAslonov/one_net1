@@ -26,5 +26,6 @@ class Client extends Model
         'location',
         'branch_id',
         'organ_id',
+        'is_active'
     ];
 }
