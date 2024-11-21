@@ -30,40 +30,10 @@
             border-radius: 50px;
         }
 
-        /* Image upload box style */
-        #fileDropArea {
-            position: relative;
-            cursor: pointer;
-            width: 250px; /* Wider than tall */
-            height: 120px; /* Smaller height */
-            border: 2px dashed rgb(177, 177, 177);
-            border-radius: 8px;
-            padding: 15px;
-            text-align: center;
-            background-color: #e0e0e0; /* Gray background */
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-        }
-
-        /* Hover effect for file drop area */
-        #fileDropArea:hover {
-            background-color: #00f8e8;
-            border-color: #004058;
-            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
-        }
-
         /* Plus icon and styling */
         #fileDropArea i {
             font-size: 25px; /* Larger icon size */
             color: #6c6a6a;
-        }
-
-        /* Previews for uploaded images */
-        #image-preview {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            margin-top: 20px;
         }
 
         #image-preview img {
@@ -124,10 +94,153 @@
         .btn-primary {
             padding: 12px 25px;
         }
+        .image-upload label {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 200px;
+            height: 100px;
+            background-color: #f8f9fa; /* Light background */
+            border: 5px dashed #007bff; /* Dashed border */
+            border-radius: 5px; /* Rounded corners */
+            cursor: pointer; /* Pointer cursor */
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .image-upload label:hover {
+            background-color: #e2e6ea; /* Slightly darker on hover */
+            transform: scale(1.05); /* Slight zoom on hover */
+        }
+
+        .image-upload input[type="file"] {
+            display: none; /* Hide default file input */
+        }
+
+        #preview1, #preview2, #preview3, #preview4, #preview5 {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            width: 100%;
+            background-color: #2f266d;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            position: fixed;
+            top: 0;
+            left: 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            height: 60px;
+        }
+
+        .navbar h1 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        .navbar ul {
+            display: flex;
+            list-style: none;
+        }
+
+        .navbar ul li {
+            margin: 0 10px;
+        }
+
+        .navbar ul li a {
+            text-decoration: none;
+            color: white;
+            font-weight: 500;
+            padding: 5px 15px;
+            border-radius: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        .navbar ul li a:hover {
+            background-color: #0056b3;
+        }
+
+        /* Mobile-Friendly Navbar */
+        @media (max-width: 768px) {
+            .navbar ul {
+                flex-direction: column;
+                align-items: flex-start;
+                background-color: #00346f;
+                position: absolute;
+                top: 60px;
+                left: 0;
+                width: 100%;
+                display: none;
+            }
+
+            .navbar ul.show {
+                display: flex;
+            }
+
+            .navbar ul li {
+                margin: 10px 0;
+            }
+
+            .menu-toggle {
+                display: block;
+                background-color: #0056b3;
+                color: white;
+                padding: 10px;
+                border-radius: 50%;
+                cursor: pointer;
+                font-size: 1.2rem;
+            }
+        }
+        #preview1 img, #preview2 img, #preview3 img, #preview4 img, #preview5 img {
+            width: 200px; /* Larger preview */
+            height: 100px; /* Maintain aspect ratio */
+            object-fit: cover; /* Fit image proportionally */
+            border-radius: 5px; /* Rounded corners */
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
+<!-- Navbar -->
+<div class="navbar">
+    <h1>One Net</h1>
+    <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="{{ route('listBranch') }}">Branches</a></li>
+        <li><a href="{{ route('listOrgan') }}">Organization</a></li>
+        <li><a href="{{ route('listClient') }}">Client</a></li>
+    </ul>
+</div>
 
+@if (session('success'))
+    <div id="successMessage" style="background-color: #28a745; color: white; padding: 10px; margin-bottom: 20px; text-align: center; border-radius: 4px;">
+        {{ session('success') }}
+    </div>
+
+    <script>
+        // Hide the success message after 3 seconds
+        setTimeout(function() {
+            document.getElementById('successMessage').style.display = 'none';
+        }, 1600);
+    </script>
+@endif
 <div class="container-fluid mt-5">
     <div class="card shadow-lg border-0">
         <div class="card-header">
@@ -164,8 +277,8 @@
 
                     <!-- Host Name -->
                     <div class="col-md-6 mb-4">
-                        <label for="host_name" class="form-label">Host Name</label>
-                        <input type="text" id="host_name" name="host_name" class="form-control" placeholder="Enter host name" required>
+                        <label for="name_organ" class="form-label">Host Name</label>
+                        <input type="text" id="name_organ" name="name_organ" class="form-control" placeholder="Enter host name" required>
                     </div>
                 </div>
 
@@ -268,14 +381,68 @@
 
                 </div>
 
-                <!-- File Upload Section -->
-                <div class="mb-4">
-                    <div id="fileDropArea" class="border-dashed text-center p-5 rounded bg-light shadow-sm">
-                        <i class="fas fa-plus-circle"></i>
-                        <input type="file" id="file" name="file[]" class="d-none" multiple accept="image/*">
+                <div class="row">
+                    <!-- Image Upload Container 1 -->
+                    <div class="col-md-2 mb-1">
+                        <label class="form-label">AKT Device</label>
+                        <div class="image-upload">
+                            <label for="image1">
+                                <i class="bi bi-cloud-upload fs-2 text-primary"></i>
+                            </label>
+                            <input type="file" id="image1" name="images[image1]" class="d-none" accept="image/*">
+                            <div id="preview1" class="mt-3"></div>
+                        </div>
                     </div>
-                    <div id="image-preview" class="mt-4 d-flex flex-wrap gap-3"></div>
+
+                    <!-- Image Upload Container 2 -->
+                    <div class="col-md-2 mb-1">
+                        <label class="form-label">AKT Speed</label>
+                        <div class="image-upload">
+                            <label for="image2">
+                                <i class="bi bi-cloud-upload fs-2 text-primary"></i>
+                            </label>
+                            <input type="file" id="image2" name="images[image2]" class="d-none" accept="image/*">
+                            <div id="preview2" class="mt-3"></div>
+                        </div>
+                    </div>
+
+                    <!-- Image Upload Container 3 -->
+                    <div class="col-md-2 mb-1">
+                        <label class="form-label">AKT Speed</label>
+                        <div class="image-upload">
+                            <label for="image3">
+                                <i class="bi bi-cloud-upload fs-2 text-primary"></i>
+                            </label>
+                            <input type="file" id="image3" name="images[image3]" class="d-none" accept="image/*">
+                            <div id="preview3" class="mt-3"></div>
+                        </div>
+                    </div>
+
+                    <!-- Image Upload Container 4 -->
+                    <div class="col-md-2 mb-1">
+                        <label class="form-label">Device</label>
+                        <div class="image-upload">
+                            <label for="image4">
+                                <i class="bi bi-cloud-upload fs-2 text-primary"></i>
+                            </label>
+                            <input type="file" id="image4" name="images[image4]" class="d-none" accept="image/*">
+                            <div id="preview4" class="mt-3"></div>
+                        </div>
+                    </div>
+
+                    <!-- Image Upload Container 5 -->
+                    <div class="col-md-2 mb-1">
+                        <label class="form-label">Device</label>
+                        <div class="image-upload">
+                            <label for="image5">
+                                <i class="bi bi-cloud-upload fs-2 text-primary"></i>
+                            </label>
+                            <input type="file" id="image5" name="images[image5]" class="d-none" accept="image/*">
+                            <div id="preview5" class="mt-3"></div>
+                        </div>
+                    </div>
                 </div>
+
 
                 <!-- Submit Button -->
                 <div class="text-center mt-5">
@@ -298,109 +465,80 @@
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const fileInput = document.getElementById('file');
-        const dropArea = document.getElementById('fileDropArea');
-        const previewContainer = document.getElementById('image-preview');
-        const selectedFiles = []; // Array to hold selected files
+    document.querySelectorAll('input[type="file"]').forEach((input) => {
+        input.addEventListener('change', function () {
+            const previewId = this.id.replace('image', 'preview'); // Match the preview container ID
+            const previewContainer = document.getElementById(previewId);
+            previewContainer.innerHTML = ''; // Clear existing preview content
 
-        // Drag & Drop Handlers
-        dropArea.addEventListener('click', () => fileInput.click());
-        dropArea.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            dropArea.classList.add('border-success', 'shadow-lg');
-        });
-        dropArea.addEventListener('dragleave', () => dropArea.classList.remove('border-success', 'shadow-lg'));
-        dropArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            dropArea.classList.remove('border-success', 'shadow-lg');
-            handleFiles(e.dataTransfer.files);
-        });
+            Array.from(this.files).forEach((file) => {
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        const wrapper = document.createElement('div');
+                        wrapper.style.position = 'relative'; // Allow positioning of delete button
+                        wrapper.style.display = 'inline-block'; // Align previews in a row
+                        wrapper.style.marginRight = '10px';
 
-        fileInput.addEventListener('change', () => {
-            handleFiles(fileInput.files);
-        });
+                        const img = document.createElement('img');
+                        img.src = e.target.result; // Display the image
+                        img.alt = file.name; // Set alt text for accessibility
+                        img.style.width = '200px'; // Set a fixed width
+                        img.style.height = '120px'; // Set a fixed height
+                        img.style.objectFit = 'cover'; // Ensure the image fits within the bounds
+                        img.style.borderRadius = '5px'; // Rounded corners
+                        img.classList.add('preview-image'); // Add class for modal interaction
 
-        function handleFiles(files) {
-            const fileArray = Array.from(files);
-            fileArray.forEach(file => {
-                if (!selectedFiles.includes(file)) {
-                    selectedFiles.push(file);
+                        // Create a delete button
+                        const deleteButton = document.createElement('button');
+                        deleteButton.innerHTML = '&times;'; // '×' symbol
+                        deleteButton.style.position = 'absolute';
+                        deleteButton.style.top = '5px';
+                        deleteButton.style.right = '5px';
+                        deleteButton.style.backgroundColor = 'red';
+                        deleteButton.style.color = 'white';
+                        deleteButton.style.border = 'none';
+                        deleteButton.style.borderRadius = '50%';
+                        deleteButton.style.width = '25px';
+                        deleteButton.style.height = '25px';
+                        deleteButton.style.cursor = 'pointer';
+                        deleteButton.title = 'Delete image';
+
+                        // Attach delete functionality
+                        deleteButton.addEventListener('click', () => {
+                            previewContainer.removeChild(wrapper); // Remove the preview
+                            input.value = ''; // Clear the file input
+                        });
+
+                        // Append image and delete button to wrapper
+                        wrapper.appendChild(img);
+                        wrapper.appendChild(deleteButton);
+                        previewContainer.appendChild(wrapper);
+                    };
+                    reader.readAsDataURL(file); // Convert file to a data URL
+                } else {
+                    // Display an error if the file is not an image
+                    const error = document.createElement('p');
+                    error.textContent = `File "${file.name}" is not a valid image.`;
+                    previewContainer.appendChild(error);
                 }
             });
-
-            updatePreviews();
-        }
-
-        function updatePreviews() {
-            previewContainer.innerHTML = ''; // Clear existing previews
-            selectedFiles.forEach((file, index) => {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    const imageContainer = document.createElement('div');
-                    imageContainer.classList.add('position-relative');
-
-                    // Image preview
-                    const img = document.createElement('img');
-                    img.src = e.target.result;
-                    img.classList.add('img-thumbnail');
-                    img.onclick = () => showFullSizeImage(e.target.result);
-                    img.style.cursor = 'pointer';
-
-                    // Delete button
-                    const deleteButton = document.createElement('button');
-                    deleteButton.innerHTML = '&times;';
-                    deleteButton.classList.add('btn', 'btn-danger', 'btn-sm', 'position-absolute');
-                    deleteButton.style.top = '5px';
-                    deleteButton.style.right = '5px';
-                    deleteButton.style.zIndex = '10';
-                    deleteButton.onclick = () => removeImage(index);
-
-                    imageContainer.appendChild(img);
-                    imageContainer.appendChild(deleteButton);
-                    previewContainer.appendChild(imageContainer);
-                };
-                reader.readAsDataURL(file);
-            });
-        }
-
-        function removeImage(index) {
-            selectedFiles.splice(index, 1); // Remove file from the array
-            updatePreviews(); // Refresh previews
-        }
-
-        function showFullSizeImage(src) {
-            fullSizeImage.src = src;
-            fullSizeImageModal.show();
-        }
-
-        // Correctly submit the form with files
-        const form = document.getElementById('clientForm');
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const formData = new FormData(form);
-
-            // Append all selected files to FormData under 'file[]' key
-            selectedFiles.forEach((file) => {
-                formData.append('file[]', file);  // Ensure the key is 'file[]'
-            });
-
-            // Submit the form using fetch
-            fetch(form.action, {
-                method: 'POST',
-                body: formData,
-            })
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Form submitted successfully:', data);
-                })
-                .catch(error => {
-                    console.error('Error submitting form:', error);
-                });
         });
     });
-</script>
 
+
+    // Add event listener to handle clicks on preview images
+    document.body.addEventListener('click', function (e) {
+        if (e.target && e.target.classList.contains('preview-image')) {
+            const fullImageModal = document.getElementById('fullImageModal');
+            const fullSizeImage = document.getElementById('full-size-image');
+            fullSizeImage.src = e.target.src; // Set the modal image source
+            const modal = new bootstrap.Modal(fullImageModal); // Initialize and show the modal
+            modal.show();
+        }
+    });
+
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>

@@ -13,7 +13,11 @@ class OrganController extends Controller
         $list = Organ::where('is_active','1')->get();
         return view('Organ.list', compact('list'));
     }
-
+    public function addOrganPage()
+    {
+//        session()->flash('success', 'Client add successfully!');
+        return view('Organ.add');
+    }
     public function add(Request $request)
     {
         $data = $request->all();
