@@ -15,10 +15,10 @@
         body {
             font-family: 'Poppins', sans-serif;
             background: linear-gradient(135deg, #6a11cb, #2575fc);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+            /*display: flex;*/
+            /*justify-content: center;*/
+            /*align-items: center;*/
+            /*height: 100vh;*/
             color: #333;
             overflow-x: hidden;
             animation: fadeIn 0.8s ease-in-out;
@@ -50,6 +50,7 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
             z-index: 1000;
             height: 60px;
+
         }
 
         .navbar h1 {
@@ -80,51 +81,16 @@
             background-color: #0056b3;
         }
 
-        /* Mobile-Friendly Navbar */
-        @media (max-width: 768px) {
-            .navbar ul {
-                flex-direction: column;
-                align-items: flex-start;
-                background-color: #00346f;
-                position: absolute;
-                top: 60px;
-                left: 0;
-                width: 100%;
-                display: none;
-            }
-
-            .navbar ul.show {
-                display: flex;
-            }
-
-            .navbar ul li {
-                margin: 10px 0;
-            }
-
-            .menu-toggle {
-                display: block;
-                background-color: #0056b3;
-                color: white;
-                padding: 10px;
-                border-radius: 50%;
-                cursor: pointer;
-                font-size: 1.2rem;
-            }
-        }
-
-        .menu-toggle {
-            display: none;
-        }
 
         .container {
             background: #534ee2;
             border-radius: 16px;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-            padding: 20px 30px;
-            width: 90%;
-            /*max-width: 800px;*/
-            /*text-align: center;*/
-            /*margin-top: 80px; !* To account for the navbar *!*/
+            padding: 5px 5px;
+            width: 97%;
+            margin: 0 auto;
+            /*margin-top: 5px;*/
+            margin-top: 80px;
             animation: slideUp 0.8s ease-in-out;
         }
 
@@ -173,7 +139,7 @@
         }
 
         table th, table td {
-            padding: 25px;
+            padding: 20px;
             text-align: center;
             font-weight: bold;
         }
@@ -183,7 +149,12 @@
             color: white;
             font-weight: bold;
         }
-
+        .th_padding th {
+            padding-bottom: 0px;
+        }
+        .th_padding td {
+            padding: 0;
+        }
         table tr:nth-child(even) {
             background-color: #f2f2f2;
         }
@@ -191,7 +162,6 @@
         table tr:hover {
             background-color: #e6f7ff;
         }
-
         .btn-update {
             background-color: #352a78;
             color: white;
@@ -207,42 +177,45 @@
             background-color: #352a78;
         }
 
-        .btn-delete {
-            background-color: #66000b;
-            color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            text-decoration: none;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            border: none;
-        }
-
-        .btn-delete:hover {
-            background-color: #c82333;
-        }
-
-        .success-message {
-            background-color: #28a745;
-            color: white;
+        .filter-input {
+            width: 90%;
             padding: 10px;
-            border-radius: 4px;
-            margin-bottom: 20px;
-            animation: fadeIn 0.5s ease;
+            margin: 10px 0;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 1rem;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-input:focus {
+            border-color: #0055b1;
+            outline: none;
+            box-shadow: 0 4px 8px rgba(0, 85, 177, 0.2);
+        }
+
+        .filter-input::placeholder {
+            color: #aaa;
+            font-style: italic;
         }
 
         .header-row {
             display: flex;
-            justify-content: space-between; /* Ensures space between the title and the button */
-            align-items: center; /* Centers items vertically */
-            margin-bottom: 20px; /* Adds space below the row */
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 25px;
+        }
+        .table-container {
+            /*max-height: 768px;*/
+            overflow-y: auto;
+            /*border: 1px solid #ccc; !* Optional: Add border for a better appearance *!*/
+            border-radius: 17px;
         }
 
-        .header-row h1 {
-            margin: 0; /* Remove default margin for alignment */
-            font-size: 2rem; /* Adjust font size if needed */
-            color: #ffffff;
+        .table-container table {
+            width: 100%;
+            border-collapse: collapse;
         }
     </style>
 </head>
@@ -251,7 +224,6 @@
 <!-- Navbar -->
 <div class="navbar">
     <h1>One Net</h1>
-    <div class="menu-toggle" onclick="toggleMenu()">☰</div>
     <ul>
         <li><a href="/">Home</a></li>
         <li><a href="{{ route('listBranch') }}">Branches</a></li>
@@ -280,54 +252,77 @@
     @if ($list->isEmpty())
         <p style="color: #555; font-size: 1.2rem; margin-top: 20px;">No clients available.</p>
     @else
-        <table>
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Mgmt IP</th>
-                <th>IP</th>
-                <th>VLAN</th>
-                <th>Zayafka</th>
-                <th>ATC</th>
-                <th>Client Name</th>
-                <th>Client Number</th>
-                <th>Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach ($list as $client)
-                <tr>
-                    <td>{{ $client->id }}</td>
-                    <td>{{ $client->name_organ }}</td>
-                    <td>{{ $client->mgmt_ip }}</td>
-                    <td>{{ $client->ip }}</td>
-                    <td>{{ $client->vlan }}</td>
-                    <td>{{ $client->zayafka }}</td>
-                    <td>{{ $client->atc }}</td>
-                    <td>{{ $client->client_name }}</td>
-                    <td>{{ $client->client_number }}</td>
-                    <td>
-                        <a href="{{ route('getClient', $client->id) }}" class="btn-update">Edit</a>
-                        <form action="{{ route('deleteClient', $client->id) }}" method="POST" style="display: inline;">
-                            @csrf
-                            @method('POST')
-{{--                            <button type="submit" class="btn-delete" onclick="return confirm('Are you sure you want to delete this branch?');">Delete</button>--}}
-                        </form>
-                    </td>
+        <div class="table-container">
+            <table>
+                <thead >
+                <tr class="th_padding" >
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Mgmt IP</th>
+                    <th>IP</th>
+                    <th>VLAN</th>
+                    <th>Zayafka</th>
+                    <th>ATC</th>
+                    <th>Client Name</th>
+                    <th>Client Number</th>
+                    <th>Actions</th>
                 </tr>
-            @endforeach
-            </tbody>
-        </table>
+                <tr class="th_padding" >
+                    <th><input type="text" placeholder="Search " onkeyup="filterTable(0)" class="filter-input"></th>
+                    <th><input type="text" placeholder="Search " onkeyup="filterTable(1)" class="filter-input"></th>
+                    <th><input type="text" placeholder="Search  " onkeyup="filterTable(2)" class="filter-input"></th>
+                    <th><input type="text" placeholder="Search " onkeyup="filterTable(3)" class="filter-input"></th>
+                    <th><input type="text" placeholder="Search " onkeyup="filterTable(4)" class="filter-input"></th>
+                    <th><input type="text" placeholder="Search " onkeyup="filterTable(5)" class="filter-input"></th>
+                    <th><input type="text" placeholder="Search " onkeyup="filterTable(6)" class="filter-input"></th>
+                    <th><input type="text" placeholder="Search  " onkeyup="filterTable(7)" class="filter-input"></th>
+                    <th><input type="text" placeholder="Search  " onkeyup="filterTable(8)" class="filter-input"></th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach ($list as $client)
+                    <tr>
+                        <td>{{ $client->id }}</td>
+                        <td>{{ $client->name_organ }}</td>
+                        <td>{{ $client->mgmt_ip }}</td>
+                        <td>{{ $client->ip }}</td>
+                        <td>{{ $client->vlan }}</td>
+                        <td>{{ $client->zayafka }}</td>
+                        <td>{{ $client->atc }}</td>
+                        <td>{{ $client->client_name }}</td>
+                        <td>{{ $client->client_number }}</td>
+                        <td>
+                            <a href="{{ route('getClient', $client->id) }}" class="btn-update">Edit</a>
+                            <form action="{{ route('deleteClient', $client->id) }}" method="POST" style="display: inline;">
+                                @csrf
+                                @method('POST')
+                            </form>
+                        </td>
+                    </tr>
+                @endforeach
+                </tbody>
+            </table>
+        </div>
     @endif
 </div>
 
+
 <script>
-    function toggleMenu() {
-        const menu = document.querySelector('.navbar ul');
-        menu.classList.toggle('show');
+    function filterTable(columnIndex) {
+        const table = document.querySelector("table tbody");
+        const filter = document.querySelectorAll(".filter-input")[columnIndex].value.toUpperCase();
+        const rows = table.getElementsByTagName("tr");
+
+        for (let i = 0; i < rows.length; i++) {
+            const cell = rows[i].getElementsByTagName("td")[columnIndex];
+            if (cell) {
+                const cellText = cell.textContent || cell.innerText;
+                rows[i].style.display = cellText.toUpperCase().indexOf(filter) > -1 ? "" : "none";
+            }
+        }
     }
 </script>
-
 </body>
 </html>
+
