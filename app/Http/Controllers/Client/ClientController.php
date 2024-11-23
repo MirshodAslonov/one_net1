@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Client;
 
+use App\Exports\ClientsExport;
 use App\Http\Controllers\Controller;
 use App\Models\Branch\Branch;
 use App\Models\Client\Client;
@@ -11,13 +12,37 @@ use App\Models\Organ\Organ;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ClientController extends Controller
 {
     public function list(Request $request)
     {
-        $list = Client::query()->where('is_active','1')->get();
-        return view('Client.list', compact('list'));
+        $branches = Branch::query()->where('is_active','1')->get();
+        $organs = Organ::query()->where('is_active','1')->get();
+        $list = Client::query()->where('is_active','1')
+            ->whereHas('branch',function ($que){
+                $que->where('is_active','1');
+            })
+            ->whereHas('organ',function ($que){
+                $que->where('is_active','1');
+            })
+            ->get();
+        return view('Client.list', [
+            'list' => $list,
+            'branches' => $branches,
+            'organs' => $organs
+        ]);
+    }
+
+    public function exelDownload(Request $request)
+    {
+        $clientIds = $request->input('client_ids');
+
+            $idsArray = explode(',', $clientIds);
+            $clients = Client::whereIn('id', $idsArray)->get();
+
+        return Excel::download(new ClientsExport($clients), 'clients.xlsx');
     }
 
     public function addClientPage()
@@ -171,4 +196,12 @@ class ClientController extends Controller
             $comment->update(['comment' => $data['comment']]);
         }
     }
+
+//    public function checkMgIp(int $mg_ip)
+//    {
+//        Client::query()
+//            ->where('',$id)
+//        session()->flash('success', 'Client deleted successfully!');
+//        return redirect()->route('listClient');
+//    }
 }

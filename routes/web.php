@@ -51,6 +51,7 @@ Route::post('login', [AuthController::class, 'login'])->name('login');
     Route::get('client/get/{id}', [ClientController::class, 'get'])->name('getClient');
     Route::put('client/update/{id}', [ClientController::class, 'update'])->name('updateClient');
     Route::post('client/delete/{id}', [ClientController::class, 'delete'])->name('deleteClient');
+    Route::post('client/check/{mg_ip}', [ClientController::class, 'checkMgIp'])->name('checkMgIp');
 
-
+    Route::get('exel/download', [ClientController::class, 'exelDownload'])->name('exelDownload');
 //});

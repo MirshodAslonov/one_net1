@@ -115,11 +115,11 @@
             display: inline-block;
             background-color: #006b93;
             color: white;
-            padding: 10px 20px;
+            padding: 20px 20px;
             border-radius: 25px;
             text-decoration: none;
             font-weight: bold;
-            margin-bottom: 20px;
+            /*margin-bottom: 20px;*/
             transition: background-color 0.3s ease, transform 0.3s ease;
         }
 
@@ -188,6 +188,17 @@
             transition: all 0.3s ease-in-out;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
+        .form-select {
+            width: 20%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 1rem;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
 
         .filter-input:focus {
             border-color: #0055b1;
@@ -235,6 +246,23 @@
 <div class="container">
     <div class="header-row">
         <h1>Clients List</h1>
+        <!-- Branch -->
+
+        <select id="branch_id" name="branch_id" class="form-select" data-live-search="true">
+            <option value="" selected>Choose a branch</option>
+            @foreach ($branches as $branch)
+                <option value="{{ $branch->id }}">{{ $branch->name }}</option>
+            @endforeach
+        </select>
+        <!-- Organization -->
+
+            <select id="organ_id" name="organ_id" class="form-select" >
+                <option value="" selected >Choose an organization</option>
+                @foreach ($organs as $organ)
+                    <option value="{{ $organ->id }}">{{ $organ->name }}</option>
+                @endforeach
+            </select>
+        <a href="{{ route('exelDownload') }}" id="downloadExcelBtn" class="btn-add">Download Excel</a>
         <a href="{{ route('addClientPage') }}" class="btn-add">Add New Client</a>
     </div>
 
@@ -282,7 +310,7 @@
                 </thead>
                 <tbody>
                 @foreach ($list as $client)
-                    <tr>
+                    <tr data-branch-id="{{ $client->branch_id }}" data-organ-id="{{ $client->organ_id }}">
                         <td>{{ $client->id }}</td>
                         <td>{{ $client->name_organ }}</td>
                         <td>{{ $client->mgmt_ip }}</td>
@@ -309,20 +337,86 @@
 
 
 <script>
-    function filterTable(columnIndex) {
-        const table = document.querySelector("table tbody");
-        const filter = document.querySelectorAll(".filter-input")[columnIndex].value.toUpperCase();
-        const rows = table.getElementsByTagName("tr");
+    document.addEventListener("DOMContentLoaded", function () {
+        const filters = document.querySelectorAll(".filter-input");
+        const branchFilter = document.getElementById("branch_id");
+        const organFilter = document.getElementById("organ_id");
+        const downloadExcelBtn = document.getElementById("downloadExcelBtn");
 
-        for (let i = 0; i < rows.length; i++) {
-            const cell = rows[i].getElementsByTagName("td")[columnIndex];
-            if (cell) {
-                const cellText = cell.textContent || cell.innerText;
-                rows[i].style.display = cellText.toUpperCase().indexOf(filter) > -1 ? "" : "none";
-            }
+        function filterTable() {
+            const rows = document.querySelectorAll("tbody tr");
+
+            // Get filter values
+            const filterValues = Array.from(filters).map(filter => filter.value.toUpperCase());
+            const branchValue = branchFilter.value || "";
+            const organValue = organFilter.value || "";
+
+            rows.forEach(row => {
+                const cells = row.getElementsByTagName("td");
+
+                // Check text filters
+                const matchesTextFilters = Array.from(filters).every((filter, index) => {
+                    if (filter.value.trim() === "") return true; // Skip empty filters
+                    const cell = cells[index];
+                    const cellText = cell ? (cell.textContent || cell.innerText).toUpperCase() : "";
+                    return cellText.indexOf(filterValues[index]) > -1;
+                });
+
+                // Check branch and organ filters
+                const branchId = row.getAttribute("data-branch-id");
+                const organId = row.getAttribute("data-organ-id");
+
+                const matchesBranch = branchValue === "" || branchValue === branchId;
+                const matchesOrgan = organValue === "" || organValue === organId;
+
+                // Show or hide row based on all filters
+                row.style.display = matchesTextFilters && matchesBranch && matchesOrgan ? "" : "none";
+            });
         }
-    }
+
+        // Update the download button to include filtered client IDs or all IDs if no filter is applied
+        function updateDownloadLink() {
+            const rows = document.querySelectorAll("tbody tr");
+            const visibleRows = Array.from(rows).filter(row => {
+                return row.style.display !== "none";
+            });
+
+            let clientIds;
+
+            if (visibleRows.length === rows.length || visibleRows.length === 0) {
+                // No filters applied or all rows are visible: Include all client IDs
+                clientIds = Array.from(rows).map(row => row.querySelector("td:first-child").innerText);
+            } else {
+                // Some filters applied: Include only visible client IDs
+                clientIds = visibleRows.map(row => row.querySelector("td:first-child").innerText);
+            }
+
+            // Append client IDs as a query parameter
+            const baseUrl = "{{ route('exelDownload') }}";
+            const urlWithParams = `${baseUrl}?client_ids=${encodeURIComponent(clientIds.join(','))}`;
+            downloadExcelBtn.setAttribute("href", urlWithParams);
+        }
+
+        // Add event listeners to filters
+        filters.forEach(filter => filter.addEventListener("keyup", () => {
+            filterTable();
+            updateDownloadLink();
+        }));
+        branchFilter.addEventListener("change", () => {
+            filterTable();
+            updateDownloadLink();
+        });
+        organFilter.addEventListener("change", () => {
+            filterTable();
+            updateDownloadLink();
+        });
+
+        // Initialize download link on page load
+        updateDownloadLink();
+    });
 </script>
+
+
 </body>
 </html>
 

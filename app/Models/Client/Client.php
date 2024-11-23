@@ -2,8 +2,10 @@
 
 namespace App\Models\Client;
 
+use App\Models\Branch\Branch;
 use App\Models\Comment\Comment;
 use App\Models\File;
+use App\Models\Organ\Organ;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -36,6 +38,14 @@ class Client extends Model
     public function image(): HasMany
     {
         return $this->hasMany(File::class,'client_id','id');
+    }
+    public function branch(): HasOne
+    {
+        return $this->hasOne(Branch::class,'id','branch_id');
+    }
+    public function organ(): HasOne
+    {
+        return $this->hasOne(Organ::class,'id','organ_id');
     }
 
     public function comment():HasOne
