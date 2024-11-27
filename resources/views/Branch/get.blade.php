@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Branch</title>
     <style>
-        /* General Reset */
         * {
             margin: 0;
             padding: 0;
@@ -18,7 +17,7 @@
             background-color: #f0f4f8;
             color: #333;
             height: 100vh;
-            display: flex;
+            /*display: flex;*/
             flex-direction: column;
             justify-content: flex-start;
         }
@@ -70,7 +69,7 @@
         /* Content Styling */
         .content {
             max-width: 800px;
-            margin: 120px auto 0; /* Adjust margin to account for fixed navbar */
+            margin: 200px auto 0; /* Account for fixed navbar */
             padding: 20px;
             background-color: #ffffff;
             border-radius: 10px;
@@ -148,22 +147,7 @@
             margin-bottom: 10px;
         }
 
-        .btn-list {
-            background-color: #007bff;
-            color: white;
-            padding: 12px 20px;
-            border-radius: 6px;
-            font-size: 1rem;
-            border: none;
-            cursor: pointer;
-            width: 100%;
-            transition: background-color 0.3s ease;
-            margin-top: 20px;
-        }
 
-        .btn-list:hover {
-            background-color: #0056b3;
-        }
 
     </style>
 </head>
@@ -176,7 +160,9 @@
         <li><a href="/">Home</a></li>
         <li><a href="{{ route('listBranch') }}">Branches</a></li>
         <li><a href="{{ route('listOrgan') }}">Organization</a></li>
+        <li><a href="{{ route('listUser') }}">User</a></li>
         <li><a href="{{ route('listClient') }}">Client</a></li>
+        <li><a href="{{ route('logout') }}">Log Out</a></li>
     </ul>
 </div>
 

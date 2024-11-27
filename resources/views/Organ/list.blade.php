@@ -15,25 +15,25 @@
         body {
             font-family: 'Poppins', sans-serif;
             background: linear-gradient(135deg, #6a11cb, #2575fc);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+            /*display: flex;*/
+            /*justify-content: center;*/
+            /*align-items: center;*/
+            /*height: 100vh;*/
             color: #333;
             overflow-x: hidden;
             animation: fadeIn 0.8s ease-in-out;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+        /*@keyframes fadeIn {*/
+        /*    from {*/
+        /*        opacity: 0;*/
+        /*        transform: translateY(20px);*/
+        /*    }*/
+        /*    to {*/
+        /*        opacity: 1;*/
+        /*        transform: translateY(0);*/
+        /*    }*/
+        /*}*/
 
         /* Navbar Styles */
         .navbar {
@@ -50,6 +50,7 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
             z-index: 1000;
             height: 60px;
+
         }
 
         .navbar h1 {
@@ -80,58 +81,23 @@
             background-color: #0056b3;
         }
 
-        /* Mobile-Friendly Navbar */
-        @media (max-width: 768px) {
-            .navbar ul {
-                flex-direction: column;
-                align-items: flex-start;
-                background-color: #00346f;
-                position: absolute;
-                top: 60px;
-                left: 0;
-                width: 100%;
-                display: none;
-            }
-
-            .navbar ul.show {
-                display: flex;
-            }
-
-            .navbar ul li {
-                margin: 10px 0;
-            }
-
-            .menu-toggle {
-                display: block;
-                background-color: #0056b3;
-                color: white;
-                padding: 10px;
-                border-radius: 50%;
-                cursor: pointer;
-                font-size: 1.2rem;
-            }
-        }
-
-        .menu-toggle {
-            display: none;
-        }
 
         .container {
             background: #534ee2;
             border-radius: 16px;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-            padding: 20px 30px;
-            width: 90%;
-            max-width: 800px;
-            text-align: center;
-            margin-top: 80px; /* To account for the navbar */
+            padding: 5px 5px;
+            width: 97%;
+            margin: 0 auto;
+            /*margin-top: 5px;*/
+            margin-top: 80px;
             animation: slideUp 0.8s ease-in-out;
         }
 
         @keyframes slideUp {
             from {
                 opacity: 0;
-                transform: translateY(20px);
+                transform: translateY(-20px);
             }
             to {
                 opacity: 1;
@@ -149,11 +115,11 @@
             display: inline-block;
             background-color: #006b93;
             color: white;
-            padding: 10px 20px;
+            padding: 20px 20px;
             border-radius: 25px;
             text-decoration: none;
             font-weight: bold;
-            margin-bottom: 20px;
+            /*margin-bottom: 20px;*/
             transition: background-color 0.3s ease, transform 0.3s ease;
         }
 
@@ -165,7 +131,7 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+            margin-top: 15px;
             background-color: #f9f9f9;
             border-radius: 8px;
             overflow: hidden;
@@ -173,8 +139,9 @@
         }
 
         table th, table td {
-            padding: 15px;
-            text-align: left;
+            padding: 20px;
+            text-align: center;
+            font-weight: bold;
         }
 
         table th {
@@ -182,7 +149,12 @@
             color: white;
             font-weight: bold;
         }
-
+        .th_padding th {
+            padding-bottom: 0px;
+        }
+        .th_padding td {
+            padding: 0;
+        }
         table tr:nth-child(even) {
             background-color: #f2f2f2;
         }
@@ -190,7 +162,6 @@
         table tr:hover {
             background-color: #e6f7ff;
         }
-
         .btn-update {
             background-color: #352a78;
             color: white;
@@ -201,11 +172,6 @@
             margin-right: 10px;
             transition: background-color 0.3s ease;
         }
-
-        .btn-update:hover {
-            background-color: #352a78;
-        }
-
         .btn-delete {
             background-color: #66000b;
             color: white;
@@ -222,41 +188,20 @@
             background-color: #c82333;
         }
 
-        .success-message {
-            background-color: #28a745;
-            color: white;
-            padding: 10px;
-            border-radius: 4px;
-            margin-bottom: 20px;
-            animation: fadeIn 0.5s ease;
+        .btn-update:hover {
+            background-color: #352a78;
         }
 
         .header-row {
             display: flex;
-            justify-content: space-between; /* Ensures space between the title and the button */
-            align-items: center; /* Centers items vertically */
-            margin-bottom: 20px; /* Adds space below the row */
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 25px;
         }
 
-        .header-row h1 {
-            margin: 0; /* Remove default margin for alignment */
-            font-size: 2rem; /* Adjust font size if needed */
-            color: #ffffff;
-        }
-
-        .btn-add {
-            background-color: #056a93;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 25px;
-            text-decoration: none;
-            font-weight: bold;
-            transition: background-color 0.3s ease, transform 0.3s ease;
-        }
-
-        .btn-add:hover {
-            background-color: #0056b3;
-            transform: scale(1.05);
+        .table-container table {
+            width: 100%;
+            border-collapse: collapse;
         }
     </style>
 </head>
@@ -269,7 +214,10 @@
         <li><a href="/">Home</a></li>
         <li><a href="{{ route('listBranch') }}">Branches</a></li>
         <li><a href="{{ route('listOrgan') }}">Organization</a></li>
+        <li><a href="{{ route('listUser') }}">User</a></li>
         <li><a href="{{ route('listClient') }}">Client</a></li>
+        <li><a href="{{ route('logout') }}">Log Out</a></li>
+
     </ul>
 </div>
 

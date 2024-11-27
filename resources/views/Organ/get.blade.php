@@ -175,7 +175,10 @@
         <li><a href="/">Home</a></li>
         <li><a href="{{ route('listBranch') }}">Branches</a></li>
         <li><a href="{{ route('listOrgan') }}">Organization</a></li>
+        <li><a href="{{ route('listUser') }}">User</a></li>
         <li><a href="{{ route('listClient') }}">Client</a></li>
+        <li><a href="{{ route('logout') }}">Log Out</a></li>
+
     </ul>
 </div>
 

@@ -18,7 +18,24 @@
             align-items: center;
             background-color: #f7f7f7;
         }
+        .is-danger {
+            border-color: red !important;
+            background-color: #fdd;
+        }
 
+        .is-success {
+            border-color: green !important;
+            background-color: #dfd;
+        }
+
+        /* Text styles for result messages */
+        .text-danger {
+            color: red;
+        }
+
+        .text-success {
+            color: green;
+        }
         .container-fluid {
             max-width: 1400px; /* Updated width for a smaller, but not too small form */
             width: 100%;
@@ -223,11 +240,16 @@
     <h1>One Net</h1>
     <ul>
         <li><a href="/">Home</a></li>
+        @if(\Illuminate\Support\Facades\Auth::user()->is_admin == 1)
         <li><a href="{{ route('listBranch') }}">Branches</a></li>
         <li><a href="{{ route('listOrgan') }}">Organization</a></li>
+        <li><a href="{{ route('listUser') }}">User</a></li>
+        @endif
         <li><a href="{{ route('listClient') }}">Client</a></li>
+        <li><a href="{{ route('logout') }}">Log Out</a></li>
+
     </ul>
-</div>
+</div>z
 
 @if (session('success'))
     <div id="successMessage" style="background-color: #28a745; color: white; padding: 10px; margin-bottom: 20px; text-align: center; border-radius: 4px;">
@@ -285,8 +307,15 @@
                 <div class="row">
                     <!-- Management IP -->
                     <div class="col-md-2 mb-4">
-                        <label for="mgmt_ip" class="form-label">Management IP</label>
-                        <input type="text" id="mgmt_ip" name="mgmt_ip" class="form-control" placeholder="0.0.0.0" >
+                        <label for="mgmt_ip" class="form-label" style="font-weight: bold;">Management IP</label>
+                        <div class="d-flex">
+                            <input type="text" id="mgmt_ip" name="mgmt_ip" class="form-control" placeholder="0.0.0.0"
+                                   required>
+                            <button type="button" id="check-mgmt-ip" style="height: auto; border: none; background: none;">
+                                <i class="fa fa-check-circle" style="font-size: 20px; color: rgba(106,107,108,0.54);"></i>
+                            </button>
+                        </div>
+                        <div id="mgmt-ip-check-result" class="mt-2"></div>
                     </div>
 
                     <!-- IP -->
@@ -463,6 +492,7 @@
         </div>
     </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
     document.querySelectorAll('input[type="file"]').forEach((input) => {
@@ -537,7 +567,59 @@
             modal.show();
         }
     });
+    document.getElementById('check-mgmt-ip').addEventListener('click', function () {
+        const mgmtIpInput = document.getElementById('mgmt_ip');
+        const resultContainer = document.getElementById('mgmt-ip-check-result');
+        const mgmtIp = mgmtIpInput.value.trim();
 
+        // Clear previous messages and reset input field styles
+        resultContainer.textContent = '';
+        mgmtIpInput.classList.remove('is-danger', 'is-success');
+
+        // Validate input
+        if (!mgmtIp) {
+            resultContainer.textContent = 'Please enter a Management IP.';
+            resultContainer.classList.add('text-danger');
+            return;
+        }
+
+        // Show loading text
+        // resultContainer.textContent = 'Checking...';
+
+        // Make API request
+        fetch(`{{ route('checkMgIp', '') }}/${encodeURIComponent(mgmtIp)}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}', // Include CSRF token for Laravel
+            },
+            body: JSON.stringify({ mgmt_ip: mgmtIp }), // Send the IP as JSON payload
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then((data) => {
+                // Check the response and update the UI
+                if (data.exists) {
+                    resultContainer.classList.remove('text-success');
+                    resultContainer.classList.add('text-danger');
+                    mgmtIpInput.classList.add('is-danger'); // Highlight input field in red
+                } else {
+                    resultContainer.classList.remove('text-danger');
+                    resultContainer.classList.add('text-success');
+                    mgmtIpInput.classList.add('is-success'); // Highlight input field in green
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                resultContainer.textContent = 'An error occurred while checking. Please try again.';
+                resultContainer.classList.remove('text-success');
+                resultContainer.classList.add('text-danger');
+            });
+    });
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>

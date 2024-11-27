@@ -117,20 +117,27 @@
 </head>
 <body>
 <!-- Welcome Text -->
-<h1 class="welcome-text">Welcome to One Net</h1>
+<h1 class="welcome-text">Welcome to One Net {{\Illuminate\Support\Facades\Auth::user()->name}}</h1>
 
 <!-- Cards -->
 <div class="container">
-    <div class="card">
-        <h3>Branch</h3>
-        <p>Manage your branches </p>
-        <a href="/branch/list" class="button">Go</a>
-    </div>
-    <div class="card">
-        <h3>Organization</h3>
-        <p>Access organization data.</p>
-        <a href="/organ/list" class="button">Go</a>
-    </div>
+    @if(\Illuminate\Support\Facades\Auth::user()->is_admin == 1)
+        <div class="card">
+            <h3>Branch</h3>
+            <p>Manage your branches </p>
+            <a href="/branch/list" class="button">Go</a>
+        </div>
+        <div class="card">
+            <h3>Organization</h3>
+            <p>Access organization data.</p>
+            <a href="/organ/list" class="button">Go</a>
+        </div>
+        <div class="card">
+            <h3>User</h3>
+            <p>View and manage clients.</p>
+            <a href="/user/list" class="button">Go</a>
+        </div>
+    @endif
     <div class="card">
         <h3>Client</h3>
         <p>View and manage clients.</p>

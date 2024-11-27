@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add New Organ</title>
+    <title>Add New User</title>
     <style>
         /* General Reset */
         * {
@@ -67,6 +67,53 @@
             background-color: #0056b3;
         }
 
+        /* Toggle Switch Styles */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+            margin-bottom: 20px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            border-radius: 50%;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: 0.4s;
+        }
+
+        input:checked + .slider {
+            background-color: #28a745;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
         /* Content Styling */
         .content {
             max-width: 800px;
@@ -93,7 +140,9 @@
             font-weight: bold;
         }
 
-        form input[type="text"] {
+        form input[type="text"],
+        form input[type="password"],
+        form input[type="datetime-local"] {
             padding: 12px;
             border: 1px solid #ddd;
             border-radius: 6px;
@@ -102,7 +151,9 @@
             transition: border-color 0.3s ease;
         }
 
-        form input[type="text"]:focus {
+        form input[type="text"]:focus,
+        form input[type="password"]:focus,
+        form input[type="datetime-local"]:focus {
             border-color: #0056b3;
             outline: none;
         }
@@ -176,7 +227,7 @@
         <li><a href="/">Home</a></li>
         <li><a href="{{ route('listBranch') }}">Branches</a></li>
         <li><a href="{{ route('listOrgan') }}">Organization</a></li>
-        <li><a href="{{ route('listUser') }}">User</a></li>
+        <li><a href="{{ route('listUser') }}">Users</a></li>
         <li><a href="{{ route('listClient') }}">Client</a></li>
         <li><a href="{{ route('logout') }}">Log Out</a></li>
 
@@ -185,7 +236,7 @@
 
 <!-- Content Section -->
 <div class="content">
-    <h1>Add New Organ</h1>
+    <h1>Add New User</h1>
 
     <!-- Success Message -->
     @if (session('success'))
@@ -210,13 +261,27 @@
         </div>
 @endif
 
-<!-- Add Organ Form -->
-    <form action="{{ route('addOrgan') }}" method="POST">
+<!-- Add User Form -->
+    <form action="{{ route('addUser') }}" method="POST">
         @csrf
-        <label for="name">Organ Name</label>
-        <input type="text" id="name" name="name" placeholder="Enter organ name" value="{{ old('name') }}" required>
-        <button type="submit">Add Organ</button>
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" placeholder="Enter user name" value="{{ old('name') }}" required>
+
+        <label for="phone">Phone</label>
+        <input type="text" id="phone" name="phone" placeholder="Enter phone number" value="{{ old('phone') }}" required>
+
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Enter password" required>
+
+        <label for="password">Admin</label>
+        <label for="is_admin" class="switch">
+            <input type="checkbox" id="is_admin" name="is_admin" value="1" {{ old('is_admin') ? 'checked' : '' }}>
+            <span class="slider round"></span>
+        </label>
+
+        <button type="submit">Add User</button>
     </form>
+
 </div>
 
 </body>

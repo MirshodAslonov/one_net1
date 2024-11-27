@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add New Organ</title>
+    <title>Edit User</title>
     <style>
         /* General Reset */
         * {
@@ -18,7 +18,6 @@
             background-color: #f0f4f8;
             color: #333;
             height: 100vh;
-            /*display: flex;*/
             flex-direction: column;
             justify-content: flex-start;
         }
@@ -70,7 +69,7 @@
         /* Content Styling */
         .content {
             max-width: 800px;
-            margin: 200px auto 0; /* Account for fixed navbar */
+            margin: 200px auto 0;
             padding: 20px;
             background-color: #ffffff;
             border-radius: 10px;
@@ -93,7 +92,8 @@
             font-weight: bold;
         }
 
-        form input[type="text"] {
+        form input[type="text"],
+        form input[type="password"] {
             padding: 12px;
             border: 1px solid #ddd;
             border-radius: 6px;
@@ -102,7 +102,8 @@
             transition: border-color 0.3s ease;
         }
 
-        form input[type="text"]:focus {
+        form input[type="text"]:focus,
+        form input[type="password"]:focus {
             border-color: #0056b3;
             outline: none;
         }
@@ -148,23 +149,52 @@
             margin-bottom: 10px;
         }
 
-        .btn-list {
-            background-color: #007bff;
-            color: white;
-            padding: 12px 20px;
-            border-radius: 6px;
-            font-size: 1rem;
-            border: none;
+        /* Toggle Switch Styles */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+            margin-bottom: 20px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
             cursor: pointer;
-            width: 100%;
-            transition: background-color 0.3s ease;
-            margin-top: 20px;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+            border-radius: 34px;
         }
 
-        .btn-list:hover {
-            background-color: #0056b3;
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            border-radius: 50%;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: 0.4s;
         }
 
+        input:checked + .slider {
+            background-color: #28a745;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
     </style>
 </head>
 <body>
@@ -179,13 +209,12 @@
         <li><a href="{{ route('listUser') }}">User</a></li>
         <li><a href="{{ route('listClient') }}">Client</a></li>
         <li><a href="{{ route('logout') }}">Log Out</a></li>
-
     </ul>
 </div>
 
 <!-- Content Section -->
 <div class="content">
-    <h1>Add New Organ</h1>
+    <h1>Edit User</h1>
 
     <!-- Success Message -->
     @if (session('success'))
@@ -210,12 +239,26 @@
         </div>
 @endif
 
-<!-- Add Organ Form -->
-    <form action="{{ route('addOrgan') }}" method="POST">
+<!-- Edit User Form -->
+    <form action="{{ route('updateUser', $user->id) }}" method="POST">
         @csrf
-        <label for="name">Organ Name</label>
-        <input type="text" id="name" name="name" placeholder="Enter organ name" value="{{ old('name') }}" required>
-        <button type="submit">Add Organ</button>
+        @method('PUT')
+
+        <label for="name">User Name</label>
+        <input type="text" id="name" name="name" value="{{ old('name', $user->name) }}" required>
+
+        <label for="phone">Phone</label>
+        <input type="text" id="phone" name="phone" value="{{ old('phone', $user->phone) }}" required>
+
+{{--        <label for="password">Password</label>--}}
+{{--        <input type="password" id="password" name="password" placeholder="Leave blank to keep unchanged">--}}
+
+        <label for="is_admin" class="switch">
+            <input type="checkbox" id="is_admin" name="is_admin" value="1" {{ old('is_admin', $user->is_admin) ? 'checked' : '' }}>
+            <span class="slider"></span>
+        </label>
+
+        <button type="submit">Update User</button>
     </form>
 </div>
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -16,18 +17,15 @@ class AuthController extends Controller
     {
         $credentials = $request->only('phone', 'password');
 
-        if (!auth()->attempt($credentials,$request->get('remember_me'))) {
-           throwError('Auth not found!');
+        if(Auth::attempt($credentials)){
+            return redirect()->route('homePage');
+        }else{
+            return redirect()->back();
         }
+    }
 
-        $user = $request->user();
-
-        $tokenResult = $user->createToken('Personal Access Token');
-        $token = $tokenResult->plainTextToken;
-
-        return success([
-            'access_token' => $token,
-            'token_type' => 'Bearer',
-        ]);
+    public function logout(){
+        Auth::logout();
+        return view('Auth.login');
     }
 }

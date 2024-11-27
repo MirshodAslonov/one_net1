@@ -197,11 +197,9 @@ class ClientController extends Controller
         }
     }
 
-//    public function checkMgIp(int $mg_ip)
-//    {
-//        Client::query()
-//            ->where('',$id)
-//        session()->flash('success', 'Client deleted successfully!');
-//        return redirect()->route('listClient');
-//    }
+    public function checkMgIp(string $mg_ip)
+    {
+        $exists = Client::where('mgmt_ip', $mg_ip)->exists();
+        return response()->json(['exists' => $exists]);
+    }
 }
