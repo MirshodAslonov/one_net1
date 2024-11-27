@@ -6,6 +6,7 @@ use App\Models\Branch\Branch;
 use App\Models\Comment\Comment;
 use App\Models\File;
 use App\Models\Organ\Organ;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -32,7 +33,8 @@ class Client extends Model
         'location',
         'branch_id',
         'organ_id',
-        'is_active'
+        'is_active',
+        'user_id'
     ];
 
     public function image(): HasMany
@@ -42,6 +44,10 @@ class Client extends Model
     public function branch(): HasOne
     {
         return $this->hasOne(Branch::class,'id','branch_id');
+    }
+    public function user(): HasOne
+    {
+        return $this->hasOne(User::class,'id','user_id');
     }
     public function organ(): HasOne
     {

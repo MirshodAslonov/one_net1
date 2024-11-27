@@ -60,6 +60,7 @@ class ClientController extends Controller
     public function add(Request $request)
     {
         $data = $request->all();
+        $data['user_id'] = auth()->user()->id;
         $client = Client::query()->create($data);
         $this->addOrUpdateComment([
             'client_id' => $client->id,
@@ -83,6 +84,7 @@ class ClientController extends Controller
             ->with('image',function($query){
                 $query->where('is_active','1');
             })
+            ->with('user')
             ->with('comment')
             ->first();
 
@@ -119,7 +121,8 @@ class ClientController extends Controller
                 'client_name' => $data['client_name'],
                 'client_number' => $data['client_number'],
                 'date_connect' => $data['date_connect'],
-                'location' => $data['location']
+                'location' => $data['location'],
+                'user_id' => auth()->user()->id
             ]);
         $this->addOrUpdateComment([
             'client_id' => $id,

@@ -268,9 +268,18 @@
 <div class="container-fluid mt-5">
     <div class="card shadow-lg border-0">
         <div class="card-header">
-            <h3 class="mb-0">Add  New  Hosts</h3>
-            <p class="text-light"></p>
+            <div class="d-flex w-100 justify-content-between align-items-center">
+        <span class="d-flex align-items-center text-muted" style="font-size: 0.95rem; font-weight: 500;">
+            <i class="bi bi-person-circle" style="font-size: 1.2rem; margin-right: 8px; color: #6c757d;"></i>
+            <span class="mr-2 font-weight-bold text-primary">Last updated by : __</span>
+            <span class="font-weight-bold text-primary">
+                {{ $values['user']['name'] ?? 'Unknown User' }}
+            </span>
+        </span>
+                <h3 class="mb-0 text-primary">Add New Hosts</h3>
+            </div>
         </div>
+
         <div class="card-body p-5">
             <form action="{{ route('updateClient', ['id' => $values['id']]) }}" method="POST" enctype="multipart/form-data">
                 @csrf
