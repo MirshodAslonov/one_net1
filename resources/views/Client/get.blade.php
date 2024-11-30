@@ -248,6 +248,7 @@
         <li><a href="{{ route('listUser') }}">User</a></li>
         @endif
         <li><a href="{{ route('listClient') }}">Client</a></li>
+        <li><a href="{{ route('listProblemClient') }}">Problems</a></li>
         <li><a href="{{ route('logout') }}">Log Out</a></li>
 
     </ul>

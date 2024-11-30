@@ -32,13 +32,13 @@
             width: 100%;
             max-width: 400px;
             text-align: center;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            /*transition: transform 0.3s ease, box-shadow 0.3s ease;*/
         }
 
-        .login-container:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
-        }
+        /*.login-container:hover {*/
+        /*    transform: translateY(-10px);*/
+        /*    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);*/
+        /*}*/
 
         h2 {
             margin-bottom: 1.5rem;
@@ -89,11 +89,11 @@
             font-size: 1rem;
             font-weight: bold;
             cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
+            /*transition: transform 0.3s, box-shadow 0.3s;*/
         }
 
         .btn:hover {
-            transform: translateY(-5px);
+            /*transform: translateY(-5px);*/
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
 

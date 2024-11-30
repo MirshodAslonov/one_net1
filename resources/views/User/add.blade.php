@@ -229,8 +229,8 @@
         <li><a href="{{ route('listOrgan') }}">Organization</a></li>
         <li><a href="{{ route('listUser') }}">Users</a></li>
         <li><a href="{{ route('listClient') }}">Client</a></li>
+        <li><a href="{{ route('listProblemClient') }}">Problems</a></li>
         <li><a href="{{ route('logout') }}">Log Out</a></li>
-
     </ul>
 </div>
 

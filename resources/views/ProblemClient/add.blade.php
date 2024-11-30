@@ -193,7 +193,20 @@
         .navbar ul li a:hover {
             background-color: #0056b3;
         }
+        .btn-update {
+            background-color: #352a78;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin-right: 10px;
+            transition: background-color 0.3s ease;
+        }
 
+        .btn-update:hover {
+            background-color: #352a78;
+        }
         /* Mobile-Friendly Navbar */
         @media (max-width: 768px) {
             .navbar ul {
@@ -211,19 +224,16 @@
                 display: flex;
             }
 
+            .field + .field {
+                margin-top: 15px;
+            }
+
+
+
             .navbar ul li {
                 margin: 10px 0;
             }
 
-            .menu-toggle {
-                display: block;
-                background-color: #0056b3;
-                color: white;
-                padding: 10px;
-                border-radius: 50%;
-                cursor: pointer;
-                font-size: 1.2rem;
-            }
         }
         #preview1 img, #preview2 img, #preview3 img, #preview4 img, #preview5 img {
             width: 200px; /* Larger preview */
@@ -241,9 +251,9 @@
     <ul>
         <li><a href="/">Home</a></li>
         @if(\Illuminate\Support\Facades\Auth::user()->is_admin == 1)
-        <li><a href="{{ route('listBranch') }}">Branches</a></li>
-        <li><a href="{{ route('listOrgan') }}">Organization</a></li>
-        <li><a href="{{ route('listUser') }}">User</a></li>
+            <li><a href="{{ route('listBranch') }}">Branches</a></li>
+            <li><a href="{{ route('listOrgan') }}">Organization</a></li>
+            <li><a href="{{ route('listUser') }}">User</a></li>
         @endif
         <li><a href="{{ route('listClient') }}">Client</a></li>
         <li><a href="{{ route('listProblemClient') }}">Problems</a></li>
@@ -267,208 +277,234 @@
 <div class="container-fluid mt-5">
     <div class="card shadow-lg border-0">
         <div class="card-header">
-            <h3 class="mb-0">Add  New  Hosts</h3>
+            <h3 class="mb-0">Create Problem</h3>
             <p class="text-light"></p>
         </div>
         <div class="card-body p-5">
-            <form  action="{{ route('addClient') }}" method="POST" enctype="multipart/form-data" >
+            <form  action="{{ route('addProblemClient') }}" method="POST" enctype="multipart/form-data" >
                 @csrf
-                <div class="row">
+                <input type="hidden" name="client_id" value="{{ $client['id'] }}">
 
-                    <!-- Branch -->
-                    <div class="col-md-3 mb-4">
-                        <label for="branch_id" class="form-label">Branch</label>
-                        <select id="branch_id" name="branch_id" class="form-select" data-live-search="true" required>
-                            <option value="" selected disabled>Choose a branch</option>
-                            @foreach ($branches as $branch)
-                                <option value="{{ $branch->id }}">{{ $branch->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-
-                    <!-- Organization -->
-                    <div class="col-md-3 mb-4">
-                        <label for="organ_id" class="form-label">Organization</label>
-                        <select id="organ_id" name="organ_id" class="form-select" required>
-                            <option value="" selected disabled>Choose an organization</option>
-                            @foreach ($organs as $organ)
-                                <option value="{{ $organ->id }}">{{ $organ->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <!-- Host Name -->
-                    <div class="col-md-6 mb-4">
-                        <label for="name_organ" class="form-label">Host Name</label>
-                        <input type="text" id="name_organ" name="name_organ" class="form-control" placeholder="Enter host name" required>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <!-- Management IP -->
-                    <div class="col-md-2 mb-4">
-                        <label for="mgmt_ip" class="form-label" style="font-weight: bold;">Management IP</label>
-                        <div class="d-flex">
-                            <input type="text" id="mgmt_ip" name="mgmt_ip" class="form-control" placeholder="0.0.0.0"
-                                   required>
-                            <button type="button" id="check-mgmt-ip" style="height: auto; border: none; background: none;">
-                                <i class="fa fa-check-circle" style="font-size: 20px; color: rgba(106,107,108,0.54);"></i>
-                            </button>
+                <div class="col-md-12 mb-4" style="
+                                                    display: grid;
+                                                    grid-template-columns: repeat(7, 1fr) auto;
+                                                    gap: 15px;
+                                                    border: 1px solid #ddd;
+                                                    border-radius: 12px;
+                                                    padding: 20px;
+                                                    background: linear-gradient(120deg, #ffffff, #f0f9ff);
+                                                    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+                                                ">
+                    <!-- ID -->
+                    <div style="
+                                                    text-align: center;
+                                                    padding: 10px;
+                                                    background-color: #f9fafb;
+                                                    border-radius: 8px;
+                                                    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+                                                ">
+                        <label class="form-label" style="font-weight: bold; color: #3b82f6;">ID</label>
+                        <div style="font-size: 14px; color: #374151;">
+                            {{ $client->id }}
                         </div>
-                        <div id="mgmt-ip-check-result" class="mt-2"></div>
                     </div>
 
-                    <!-- IP -->
-                    <div class="col-md-2 mb-4">
-                        <label for="ip" class="form-label">IP Address</label>
-                        <input type="text" id="ip" name="ip" class="form-control" placeholder="0.0.0.0/0" >
+                    <!-- Name -->
+                    <div style="
+                                    text-align: center;
+                                    padding: 10px;
+                                    background-color: #f9fafb;
+                                    border-radius: 8px;
+                                    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+                                ">
+                        <label class="form-label" style="font-weight: bold; color: #3b82f6;">Name</label>
+                        <div style="font-size: 14px; color: #374151;">
+                            {{ $client['name_organ'] }}
+                        </div>
                     </div>
 
-                    <!-- VLAN -->
-                    <div class="col-md-2 mb-4">
-                        <label for="vlan" class="form-label">VLAN</label>
-                        <input type="number" id="vlan" name="vlan" class="form-control" placeholder="Enter Vlan" >
+                    <!-- Mgmt IP -->
+                    <div style="
+                                        text-align: center;
+                                        padding: 10px;
+                                        background-color: #f9fafb;
+                                        border-radius: 8px;
+                                        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+                                    ">
+                        <label class="form-label" style="font-weight: bold; color: #3b82f6;">Mgmt IP</label>
+                        <div style="font-size: 14px; color: #374151;">
+                            {{ $client['mgmt_ip'] }}
+                        </div>
                     </div>
 
-                    <!-- VLAN 2 IP -->
-                    <div class="col-md-2 mb-4">
-                        <label for="vlan_ip" class="form-label">VLAN 2 IP</label>
-                        <input type="text" id="vlan_ip" name="vlan_ip" class="form-control" placeholder="Enter VLAN 2 IP" >
+                    <!-- Zayafka -->
+                    <div style="
+                                                    text-align: center;
+                                                    padding: 10px;
+                                                    background-color: #f9fafb;
+                                                    border-radius: 8px;
+                                                    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+                                                ">
+                        <label class="form-label" style="font-weight: bold; color: #3b82f6;">Zayafka</label>
+                        <div style="font-size: 14px; color: #374151;">
+                            {{ $client['zayafka'] }}
+                        </div>
                     </div>
-
-                    <!-- Request -->
-                    <div class="col-md-2 mb-4">
-                        <label for="zayafka" class="form-label">Zayafka</label>
-                        <input type="text" id="zayafka" name="zayafka" class="form-control" placeholder="Enter Zayafka" required>
-                    </div>
-
-                    <!-- STP Request -->
-                    <div class="col-md-2 mb-4">
-                        <label for="stp_zayafka" class="form-label">STP Zayafka</label>
-                        <input type="text" id="stp_zayafka" name="stp_zayafka" class="form-control" placeholder="Enter STP zayafka" >
-                    </div>
-
-                </div>
-
-                <div class="row">
-                    <!-- ATC -->
-                    <div class="col-md-2 mb-4">
-                        <label for="atc" class="form-label">ATC</label>
-                        <input type="text" id="atc" name="atc" class="form-control" placeholder="Enter ATC" required>
-                    </div>
-
-                    <!-- Port -->
-                    <div class="col-md-8 mb-4">
-                        <label for="port" class="form-label">Port</label>
-                        <input type="text" id="port" name="port" class="form-control" placeholder="Enter port" >
-                    </div>
-
-                    <!-- Speed -->
-                    <div class="col-md-2 mb-4">
-                        <label for="speed" class="form-label">Speed</label>
-                        <input type="text" id="speed" name="speed" class="form-control" placeholder="Enter speed" >
-                    </div>
-
-                </div>
-
-                <div class="row">
 
                     <!-- Client Name -->
-                    <div class="col-md-4 mb-4">
-                        <label for="client_name" class="form-label">Client Name</label>
-                        <input type="text" id="client_name" name="client_name" class="form-control" placeholder="Enter client name" >
+                    <div style="
+                                    text-align: center;
+                                    padding: 10px;
+                                    background-color: #f9fafb;
+                                    border-radius: 8px;
+                                    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+                                ">
+                        <label class="form-label" style="font-weight: bold; color: #3b82f6;">Client Name</label>
+                        <div style="font-size: 14px; color: #374151;">
+                            {{ $client['client_name'] }}
+                        </div>
+                    </div>
+
+                    <!-- ATC -->
+                    <div style="
+                                        text-align: center;
+                                        padding: 10px;
+                                        background-color: #f9fafb;
+                                        border-radius: 8px;
+                                        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+                                    ">
+                        <label class="form-label" style="font-weight: bold; color: #3b82f6;">ATC</label>
+                        <div style="font-size: 14px; color: #374151;">
+                            {{ $client['atc'] }}
+                        </div>
                     </div>
 
                     <!-- Client Number -->
-                    <div class="col-md-4 mb-4">
-                        <label for="client_number" class="form-label">Client Number</label>
-                        <input type="text" id="client_number" name="client_number" class="form-control" placeholder="+998 " >
+                    <div style="
+                                        text-align: center;
+                                        padding: 10px;
+                                        background-color: #f9fafb;
+                                        border-radius: 8px;
+                                        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+                                    ">
+                        <label class="form-label" style="font-weight: bold; color: #3b82f6;">Client Number</label>
+                        <div style="font-size: 14px; color: #374151;">
+                            {{ $client['client_number'] }}
+                        </div>
+                    </div>
+
+                    <!-- Show -->
+                    <div style="
+                                    text-align: center;
+                                    padding: 10px;
+                                ">
+                        <label class="form-label" style="
+                                        font-weight: bold;
+                                        color: #3b82f6;
+                                        display: block;
+                                    ">Show</label>
+                        <a href="{{ route('getClient', $client->id) }}" style="
+            display: inline-block;
+            padding: 8px 12px;
+            font-size: 13px;
+            color: #ffffff;
+            background-color: #3b82f6;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: background-color 0.3s ease;
+        " onmouseover="this.style.backgroundColor='#2563eb'"
+                           onmouseout="this.style.backgroundColor='#3b82f6'">
+                            Edit
+                        </a>
                     </div>
                 </div>
 
-                <div class="row">
-
-                    <!-- Date Connected -->
-                    <div class="col-md-4 mb-4">
-                        <label for="date_connect" class="form-label">Date Connected</label>
-                        <input type="date" id="date_connect" name="date_connect" class="form-control" >
-                    </div>
-
-                    <!-- Location -->
-                    <div class="col-md-4 mb-4">
-                        <label for="location" class="form-label">Location</label>
-                        <input type="text" id="location" name="location" class="form-control" placeholder="Enter location" >
-                    </div>
-                </div>
-
-                <div class="row">
+                <div class="d-flex mb-4 gap-3">
                     <!-- Comment -->
-                    <div class="col-md-10 mb-4">
-                        <label for="comment" class="form-label">Comment</label>
-                        <textarea id="comment" name="comment" rows="3" class="form-control" placeholder="Enter comment"></textarea>
+                    <div class="col-md-6">
+                        <label for="problem" class="form-label">Problem : </label>
+                        <span class="font-weight-bold text-primary">
+                            {{ auth()->user()->name ?? '___Unknown User' }}
+                        </span>
+                        <textarea id="problem" name="problem" rows="3" class="form-control" style="height: 400px; resize: none" placeholder="Enter problem"></textarea>
                     </div>
-
+                    <div class="col-md-6">
+                        <label for="answer" class="form-label">Answer : </label>
+                        <span class="font-weight-bold text-primary">
+                            {{ $values['answer_user']['name'] ?? '___Unknown User' }}
+                        </span>
+                        <textarea id="answer" name="answer" rows="3" class="form-control" style="height: 400px; resize: none" placeholder="Enter answer"></textarea>
+                    </div>
                 </div>
 
                 <div class="row">
                     <!-- Image Upload Container 1 -->
                     <div class="col-md-2 mb-1">
-                        <label class="form-label">AKT Device</label>
+                        <label class="form-label">Area 1</label>
                         <div class="image-upload">
-                            <label for="image1">
+                            <label for="problem_image1">
                                 <i class="bi bi-cloud-upload fs-2 text-primary"></i>
                             </label>
-                            <input type="file" id="image1" name="images[image1]" class="d-none" accept="image/*">
+                            <input type="file" id="problem_image1" name="images[problem_image1]" class="d-none" accept="image/*">
                             <div id="preview1" class="mt-3"></div>
                         </div>
                     </div>
 
                     <!-- Image Upload Container 2 -->
                     <div class="col-md-2 mb-1">
-                        <label class="form-label">AKT Speed</label>
+                        <label class="form-label">Area 2</label>
                         <div class="image-upload">
-                            <label for="image2">
+                            <label for="problem_image2">
                                 <i class="bi bi-cloud-upload fs-2 text-primary"></i>
                             </label>
-                            <input type="file" id="image2" name="images[image2]" class="d-none" accept="image/*">
+                            <input type="file" id="problem_image2" name="images[problem_image2]" class="d-none" accept="image/*">
                             <div id="preview2" class="mt-3"></div>
                         </div>
                     </div>
 
                     <!-- Image Upload Container 3 -->
                     <div class="col-md-2 mb-1">
-                        <label class="form-label">AKT Speed</label>
+                        <label class="form-label">Area 3</label>
                         <div class="image-upload">
-                            <label for="image3">
+                            <label for="problem_image3">
                                 <i class="bi bi-cloud-upload fs-2 text-primary"></i>
                             </label>
-                            <input type="file" id="image3" name="images[image3]" class="d-none" accept="image/*">
+                            <input type="file" id="problem_image3" name="images[problem_image3]" class="d-none" accept="image/*">
                             <div id="preview3" class="mt-3"></div>
                         </div>
                     </div>
 
                     <!-- Image Upload Container 4 -->
                     <div class="col-md-2 mb-1">
-                        <label class="form-label">Device</label>
+                        <label class="form-label">Area 4</label>
                         <div class="image-upload">
-                            <label for="image4">
+                            <label for="problem_image4">
                                 <i class="bi bi-cloud-upload fs-2 text-primary"></i>
                             </label>
-                            <input type="file" id="image4" name="images[image4]" class="d-none" accept="image/*">
+                            <input type="file" id="problem_image4" name="images[problem_image4]" class="d-none" accept="image/*">
                             <div id="preview4" class="mt-3"></div>
                         </div>
                     </div>
 
                     <!-- Image Upload Container 5 -->
                     <div class="col-md-2 mb-1">
-                        <label class="form-label">Device</label>
+                        <label class="form-label">Area 5</label>
                         <div class="image-upload">
-                            <label for="image5">
+                            <label for="problem_image5">
                                 <i class="bi bi-cloud-upload fs-2 text-primary"></i>
                             </label>
-                            <input type="file" id="image5" name="images[image5]" class="d-none" accept="image/*">
+                            <input type="file" id="problem_image5" name="images[problem_image5]" class="d-none" accept="image/*">
                             <div id="preview5" class="mt-3"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-2 mb-1">
+                        <label class="form-label">Area 6</label>
+                        <div class="image-upload">
+                            <label for="problem_image6">
+                                <i class="bi bi-cloud-upload fs-2 text-primary"></i>
+                            </label>
+                            <input type="file" id="problem_image6" name="images[problem_image6]" class="d-none" accept="image/*">
+                            <div id="preview6" class="mt-3"></div>
                         </div>
                     </div>
                 </div>
@@ -476,7 +512,7 @@
 
                 <!-- Submit Button -->
                 <div class="text-center mt-5">
-                    <button type="submit" class="btn btn-primary btn-lg rounded shadow">Save Host</button>
+                    <button type="submit" class="btn btn-primary btn-lg rounded shadow">Create Problem</button>
                 </div>
             </form>
         </div>
@@ -498,7 +534,7 @@
 <script>
     document.querySelectorAll('input[type="file"]').forEach((input) => {
         input.addEventListener('change', function () {
-            const previewId = this.id.replace('image', 'preview'); // Match the preview container ID
+            const previewId = this.id.replace('problem_image', 'preview'); // Match the preview container ID
             const previewContainer = document.getElementById(previewId);
             previewContainer.innerHTML = ''; // Clear existing preview content
 
@@ -568,61 +604,9 @@
             modal.show();
         }
     });
-    document.getElementById('check-mgmt-ip').addEventListener('click', function () {
-        const mgmtIpInput = document.getElementById('mgmt_ip');
-        const resultContainer = document.getElementById('mgmt-ip-check-result');
-        const mgmtIp = mgmtIpInput.value.trim();
-
-        // Clear previous messages and reset input field styles
-        resultContainer.textContent = '';
-        mgmtIpInput.classList.remove('is-danger', 'is-success');
-
-        // Validate input
-        if (!mgmtIp) {
-            resultContainer.textContent = 'Please enter a Management IP.';
-            resultContainer.classList.add('text-danger');
-            return;
-        }
-
-        // Show loading text
-        // resultContainer.textContent = 'Checking...';
-
-        // Make API request
-        fetch(`{{ route('checkMgIp', '') }}/${encodeURIComponent(mgmtIp)}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}', // Include CSRF token for Laravel
-            },
-            body: JSON.stringify({ mgmt_ip: mgmtIp }), // Send the IP as JSON payload
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then((data) => {
-                // Check the response and update the UI
-                if (data.exists) {
-                    resultContainer.classList.remove('text-success');
-                    resultContainer.classList.add('text-danger');
-                    mgmtIpInput.classList.add('is-danger'); // Highlight input field in red
-                } else {
-                    resultContainer.classList.remove('text-danger');
-                    resultContainer.classList.add('text-success');
-                    mgmtIpInput.classList.add('is-success'); // Highlight input field in green
-                }
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-                resultContainer.textContent = 'An error occurred while checking. Please try again.';
-                resultContainer.classList.remove('text-success');
-                resultContainer.classList.add('text-danger');
-            });
-    });
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+

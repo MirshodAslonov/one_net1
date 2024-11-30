@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -177,6 +178,20 @@
             background-color: #352a78;
         }
 
+        .btn-status {
+            background-color: #ff003c;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin-right: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        /*.btn-status:hover {*/
+        /*    background-color: #352a78;*/
+        /*}*/
         .filter-input {
             width: 90%;
             padding: 10px;
@@ -326,6 +341,26 @@
             display: block;
             transition: background-color 0.3s ease;
         }
+        /* Default button style */
+        .btn-status {
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin-right: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Red color for "new" status */
+        .new-status {
+            background-color: #ff003c;
+        }
+
+        /* Green color for "finish" status */
+        .finish-status {
+            background-color: #28a745;
+        }
 
         .user-profile .dropdown a:hover {
             background-color: #f0f4f8;
@@ -367,25 +402,10 @@
 
 <div class="container">
     <div class="header-row">
-        <h1>Clients List</h1>
-        <!-- Branch -->
+        <h1>Problems List</h1>
 
-        <select id="branch_id" name="branch_id" class="form-select" data-live-search="true">
-            <option value="" selected>Choose a branch</option>
-            @foreach ($branches as $branch)
-                <option value="{{ $branch->id }}">{{ $branch->name }}</option>
-            @endforeach
-        </select>
-        <!-- Organization -->
+{{--        <a href="{{ route('exelDownload') }}" id="downloadExcelBtn" class="btn-add">Download Excel</a>--}}
 
-            <select id="organ_id" name="organ_id" class="form-select" >
-                <option value="" selected >Choose an organization</option>
-                @foreach ($organs as $organ)
-                    <option value="{{ $organ->id }}">{{ $organ->name }}</option>
-                @endforeach
-            </select>
-        <a href="{{ route('exelDownload') }}" id="downloadExcelBtn" class="btn-add">Download Excel</a>
-        <a href="{{ route('addClientPage') }}" class="btn-add">Add New Client</a>
     </div>
 
     @if (session('success'))
@@ -408,13 +428,11 @@
                 <tr class="th_padding" >
                     <th>ID</th>
                     <th>Name</th>
-                    <th>Mgmt IP</th>
-                    <th>IP</th>
-                    <th>VLAN</th>
-                    <th>Zayafka</th>
-                    <th>ATC</th>
-                    <th>Client Name</th>
-                    <th>Client Number</th>
+                    <th>Status</th>
+                    <th>Create User</th>
+                    <th>Answer User</th>
+                    <th>Created Date</th>
+                    <th>Finished Date</th>
                     <th>Actions</th>
                 </tr>
                 <tr class="th_padding" >
@@ -425,26 +443,29 @@
                     <th><input type="text" placeholder="Search " onkeyup="filterTable(4)" class="filter-input"></th>
                     <th><input type="text" placeholder="Search " onkeyup="filterTable(5)" class="filter-input"></th>
                     <th><input type="text" placeholder="Search " onkeyup="filterTable(6)" class="filter-input"></th>
-                    <th><input type="text" placeholder="Search  " onkeyup="filterTable(7)" class="filter-input"></th>
-                    <th><input type="text" placeholder="Search  " onkeyup="filterTable(8)" class="filter-input"></th>
                     <th></th>
                 </tr>
                 </thead>
                 <tbody>
-                @foreach ($list as $client)
-                    <tr data-branch-id="{{ $client->branch_id }}" data-organ-id="{{ $client->organ_id }}">
-                        <td>{{ $client->id }}</td>
-                        <td>{{ $client->name_organ }}</td>
-                        <td>{{ $client->mgmt_ip }}</td>
-                        <td>{{ $client->ip }}</td>
-                        <td>{{ $client->vlan }}</td>
-                        <td>{{ $client->zayafka }}</td>
-                        <td>{{ $client->atc }}</td>
-                        <td>{{ $client->client_name }}</td>
-                        <td>{{ $client->client_number }}</td>
+                @foreach ($list as $problem)
+                        <td>{{ $problem['id'] }}</td>
+                        <td>{{ $problem['client']['name_organ'] }}</td>
+                        <td>
+                            <button class="btn-status
+                                 @if($problem['status'] == 'active')
+                                     new-status
+                                @elseif($problem['status'] == 'finish')
+                                     finish-status
+                                @endif">
+                                {{ $problem['status'] }}
+                            </button>
+                        </td>
+                        <td>{{ $problem['problem_user']['name'] }}</td>
+                        <td>{{ $problem['answer_user']['name']??' ' }}</td>
+                        <td>{{ $problem['created_at'] }}</td>
+                        <td>{{ $problem['updated_at'] }}</td>
                         <td style="display: flex; gap: 5px;">
-                            <a href="{{ route('getClient', $client->id) }}" class="btn-update">Edit</a>
-                            <a href="{{ route('addProblemClientPage', $client->id) }}" class="btn-update">Problem</a>
+                            <a href="{{ route('getProblemClient', $problem['id']) }}" class="btn-update">Problem</a>
                         </td>
                     </tr>
                 @endforeach
@@ -457,23 +478,20 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        const filters = document.querySelectorAll(".filter-input");
-        const branchFilter = document.getElementById("branch_id");
-        const organFilter = document.getElementById("organ_id");
+        const filters = document.querySelectorAll(".filter-input"); // Text filters
         const downloadExcelBtn = document.getElementById("downloadExcelBtn");
 
+        // Function to filter table based on inputs
         function filterTable() {
             const rows = document.querySelectorAll("tbody tr");
 
-            // Get filter values
+            // Get filter values for text filters (input fields)
             const filterValues = Array.from(filters).map(filter => filter.value.toUpperCase());
-            const branchValue = branchFilter.value || "";
-            const organValue = organFilter.value || "";
 
             rows.forEach(row => {
                 const cells = row.getElementsByTagName("td");
 
-                // Check text filters
+                // Check text filters for each row
                 const matchesTextFilters = Array.from(filters).every((filter, index) => {
                     if (filter.value.trim() === "") return true; // Skip empty filters
                     const cell = cells[index];
@@ -481,24 +499,15 @@
                     return cellText.indexOf(filterValues[index]) > -1;
                 });
 
-                // Check branch and organ filters
-                const branchId = row.getAttribute("data-branch-id");
-                const organId = row.getAttribute("data-organ-id");
-
-                const matchesBranch = branchValue === "" || branchValue === branchId;
-                const matchesOrgan = organValue === "" || organValue === organId;
-
-                // Show or hide row based on all filters
-                row.style.display = matchesTextFilters && matchesBranch && matchesOrgan ? "" : "none";
+                // Show or hide row based on text filters only
+                row.style.display = matchesTextFilters ? "" : "none";
             });
         }
 
-        // Update the download button to include filtered client IDs or all IDs if no filter is applied
+        // Update the download link to include filtered client IDs or all IDs if no filter is applied
         function updateDownloadLink() {
             const rows = document.querySelectorAll("tbody tr");
-            const visibleRows = Array.from(rows).filter(row => {
-                return row.style.display !== "none";
-            });
+            const visibleRows = Array.from(rows).filter(row => row.style.display !== "none");
 
             let clientIds;
 
@@ -510,42 +519,34 @@
                 clientIds = visibleRows.map(row => row.querySelector("td:first-child").innerText);
             }
 
-            // Append client IDs as a query parameter
-            const baseUrl = "{{ route('exelDownload') }}";
+            // Append client IDs as a query parameter to the Excel download URL
+            const baseUrl = "{{ route('exelDownload') }}";  // Make sure this is the correct route
             const urlWithParams = `${baseUrl}?client_ids=${encodeURIComponent(clientIds.join(','))}`;
             downloadExcelBtn.setAttribute("href", urlWithParams);
         }
 
-        // Add event listeners to filters
+        // Add event listeners to text input filters
         filters.forEach(filter => filter.addEventListener("keyup", () => {
             filterTable();
             updateDownloadLink();
         }));
-        branchFilter.addEventListener("change", () => {
-            filterTable();
-            updateDownloadLink();
-        });
-        organFilter.addEventListener("change", () => {
-            filterTable();
-            updateDownloadLink();
-        });
 
-        // Initialize download link on page load
+        // Initialize download link and table filters on page load
         updateDownloadLink();
     });
-        function toggleDropdown() {
+
+    function toggleDropdown() {
         const userProfile = document.querySelector('.user-profile');
         userProfile.classList.toggle('active');
     }
 
-        // Close dropdown when clicking outside
-        document.addEventListener('click', (event) => {
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (event) => {
         const userProfile = document.querySelector('.user-profile');
         if (!userProfile.contains(event.target)) {
-        userProfile.classList.remove('active');
-    }
+            userProfile.classList.remove('active');
+        }
     });
-
 </script>
 
 

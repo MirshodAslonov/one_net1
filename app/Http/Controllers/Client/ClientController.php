@@ -102,7 +102,6 @@ class ClientController extends Controller
     public function update(Request $request, $id)
     {
         $data = $request->all();
-
         Client::query()
             ->where('id',$id)
             ->update([
@@ -155,15 +154,19 @@ class ClientController extends Controller
     {
         foreach ($data['images'] as $key => $file)
         {
-            $this->deleteClientFile([
-                'client_id' => $data['client_id'],
-                'image_type' => $key
-            ]);
-            $this->saveFile([
-               'client_id' => $data['client_id'],
-               'image_type' => $key,
-               'file' => $file
-            ]);
+            if($file != null){
+                $this->deleteClientFile([
+                    'client_id' => $data['client_id'],
+                    'image_type' => $key,
+                    'problem_id' => $data['problem_id']??null
+                ]);
+                $this->saveFile([
+                    'client_id' => $data['client_id'],
+                    'image_type' => $key,
+                    'file' => $file,
+                    'problem_id' =>$data['problem_id']??null
+                ]);
+            }
         }
     }
 
@@ -179,6 +182,7 @@ class ClientController extends Controller
         $new->mime_type = $data['file']->getClientMimeType();
         $new->client_id = $data['client_id'];
         $new->image_type = $data['image_type'];
+        $new->problem_id = $data['problem_id']??null;
         $new->save();
     }
 
@@ -186,7 +190,8 @@ class ClientController extends Controller
     {
         File::query()->where([
             'client_id' => $data['client_id'],
-            'image_type' => $data['image_type']
+            'image_type' => $data['image_type'],
+            'problem_id' => $data['problem_id']??null
         ])->update(['is_active' => '0']);
     }
 

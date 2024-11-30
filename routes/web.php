@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Branch\BranchController;
 use App\Http\Controllers\Client\ClientController;
 use App\Http\Controllers\Organ\OrganController;
+use App\Http\Controllers\ProblemClientController;
 use App\Http\Controllers\User\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -56,8 +57,14 @@ Route::group(['middleware' => ["auth:web"]], function () {
     Route::put('client/update/{id}', [ClientController::class, 'update'])->name('updateClient');
     Route::post('client/delete/{id}', [ClientController::class, 'delete'])->name('deleteClient');
     Route::post('client/check/{mg_ip}', [ClientController::class, 'checkMgIp'])->name('checkMgIp');
-
     Route::get('exel/download', [ClientController::class, 'exelDownload'])->name('exelDownload');
+
+    Route::get('problem/client/list', [ProblemClientController::class, 'list'])->name('listProblemClient');
+    Route::get('problem/add/client/{client_id}', [ProblemClientController::class, 'addProblemClientPage'])->name('addProblemClientPage');
+    Route::post('problem/client/add', [ProblemClientController::class, 'add'])->name('addProblemClient');
+    Route::get('problem/client/get/{id}', [ProblemClientController::class, 'get'])->name('getProblemClient');
+    Route::post('problem/client/update/{id}', [ProblemClientController::class, 'update'])->name('updateProblemClient');
+    Route::post('problem/client/delete/{id}', [ProblemClientController::class, 'delete'])->name('deleteProblemClient');
 
     Route::get('/logout',[AuthController::class,'logout'])->name('logout');
 });

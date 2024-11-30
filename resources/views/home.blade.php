@@ -143,6 +143,11 @@
         <p>View and manage clients.</p>
         <a href="/client/list" class="button">Go</a>
     </div>
+        <div class="card">
+            <h3>Problems</h3>
+            <p>View and manage clients.</p>
+            <a href="/problem/client/list" class="button">Go</a>
+        </div>
 </div>
 </body>
 </html>
