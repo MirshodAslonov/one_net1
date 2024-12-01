@@ -9,31 +9,58 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    public function addUser(Request $request)
+    public function list(Request $request)
+    {
+        $list = User::where('is_active','1')->get();
+        return view('User.list', compact('list'));
+    }
+    public function addUserPage()
+    {
+        return view('User.add');
+    }
+    public function add(Request $request)
     {
         $data = $request->all();
+        $is_admin = $request->has('is_admin') ? 1 : 0;
         User::query()->create([
             'name' => $data['name'],
             'phone' => $data['phone'],
-            'password' => $data['password'],
+            'is_admin' => $is_admin,
+            'password' => bcrypt($data['password'])
         ]);
-
-        $users = User::all();
-        return view('users_list', ['users' => $users]);
+        session()->flash('success', 'User add successfully!');
+        return redirect()->route('addUserPage');
     }
 
-    public function userSearch(Request $request)
+    public function get(int $id)
     {
-        $search = $request->input('query');
+        $user = User::query()->where('id', $id)->first();
+        return view('User.get', compact('user'));
+    }
 
-        $users = User::query()
-            ->where(function ($query) use ($search) {
-                $query->where('name', 'LIKE', "%{$search}%")
-                    ->orWhere('phone', 'LIKE', "%{$search}%")
-                    ->orWhere('created_at', 'LIKE', "%{$search}%");
-            })
-            ->get();
+    public function update(Request $request, $id)
+    {
+        $data = $request->all();
+        $is_admin = $request->has('is_admin') ? 1 : 0;
+        User::query()
+            ->where('id',$id)
+            ->update([
+                'name' => $data['name'],
+                'phone' => $data['phone'],
+                'is_admin' => $is_admin,
+            ]);
+        session()->flash('success', 'user updated successfully!');
+        return  $this->get($id);
+    }
 
-        return view('users_list', ['users' => $users]);
+    public function delete(int $id)
+    {
+        User::query()
+            ->where('id',$id)
+            ->update([
+                'is_active' => '0',
+            ]);
+        session()->flash('success', 'User deleted successfully!');
+        return redirect()->route('listBranch');
     }
 }

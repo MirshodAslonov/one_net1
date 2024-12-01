@@ -13,7 +13,11 @@ class BranchController extends Controller
         $list = Branch::where('is_active','1')->get();
         return view('Branch.list', compact('list'));
     }
-
+    public function addBranchPage()
+    {
+//        session()->flash('success', 'Client add successfully!');
+        return view('Branch.add');
+    }
     public function add(Request $request)
     {
         $data = $request->all();
