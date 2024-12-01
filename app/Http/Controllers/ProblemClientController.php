@@ -134,7 +134,7 @@ class ProblemClientController extends Controller
         if(isset($data['images'])){
             if(isset($data['images'])){
                 (new ClientController())->addClientFiles([
-                    'client_id' => $id,
+                    'client_id' => $data['client_id'],
                     'images' => $data['images'],
                     'problem_id' => $id
                 ]);

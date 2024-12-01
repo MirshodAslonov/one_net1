@@ -284,6 +284,7 @@
             <form action="{{ route('updateProblemClient', $values['id']) }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
+                <input type="hidden" name="client_id" value="{{ $values['client_id'] }}">
                 <div class="col-md-12 mb-4" style="
                                                     display: grid;
                                                     grid-template-columns: repeat(7, 1fr) auto;
