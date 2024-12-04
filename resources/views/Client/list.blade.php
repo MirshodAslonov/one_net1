@@ -384,7 +384,9 @@
                     <option value="{{ $organ->id }}">{{ $organ->name }}</option>
                 @endforeach
             </select>
+        @if(\Illuminate\Support\Facades\Auth::user()->is_admin == 1)
         <a href="{{ route('exelDownload') }}" id="downloadExcelBtn" class="btn-add">Download Excel</a>
+        @endif
         <a href="{{ route('addClientPage') }}" class="btn-add">Add New Client</a>
     </div>
 

@@ -251,8 +251,8 @@
         <label for="phone">Phone</label>
         <input type="text" id="phone" name="phone" value="{{ old('phone', $user->phone) }}" required>
 
-{{--        <label for="password">Password</label>--}}
-{{--        <input type="password" id="password" name="password" placeholder="Leave blank to keep unchanged">--}}
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Enter password" >
 
         <label for="is_admin" class="switch">
             <input type="checkbox" id="is_admin" name="is_admin" value="1" {{ old('is_admin', $user->is_admin) ? 'checked' : '' }}>

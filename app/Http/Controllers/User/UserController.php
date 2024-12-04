@@ -41,17 +41,28 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         $data = $request->all();
+
         $is_admin = $request->has('is_admin') ? 1 : 0;
+
+        $updateData = [
+            'name' => $data['name'],
+            'phone' => $data['phone'],
+            'is_admin' => $is_admin,
+        ];
+
+        if (!empty($data['password'])) {
+            $updateData['password'] = bcrypt($data['password']);
+        }
+
         User::query()
-            ->where('id',$id)
-            ->update([
-                'name' => $data['name'],
-                'phone' => $data['phone'],
-                'is_admin' => $is_admin,
-            ]);
-        session()->flash('success', 'user updated successfully!');
-        return  $this->get($id);
+            ->where('id', $id)
+            ->update($updateData);
+
+        session()->flash('success', 'User updated successfully!');
+
+        return $this->get($id);
     }
+
 
     public function delete(int $id)
     {
